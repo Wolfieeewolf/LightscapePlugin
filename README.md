@@ -1,6 +1,6 @@
 # Lightscape Plugin for OpenRGB
 
-Lightscape is a 3D spatial LED control system plugin for OpenRGB that allows you to organize and control your RGB devices in a three-dimensional grid layout.
+Lightscape is a 3D spatial LED control system plugin for OpenRGB that allows you to organize and control your RGB devices in a three-dimensional grid layout with advanced lighting effects.
 
 ## Project Background
 
@@ -8,33 +8,16 @@ This project was inspired by the Philips amBX Gaming peripheral system from 2006
 
 ## Development Note
 
-This entire plugin was created using Claude AI from Anthropic. It's an experiment to explore what's possible with AI-assisted development. As such:
+This entire plugin was created using assistance from:
+- [Claude AI](https://claude.ai)
+- [ChatGPT](https://chat.openai.com)
+- [DeepSeek](https://www.deepseek.com/)
 
+As such:
 - This is a very early alpha version
 - There may be bugs and issues
 - Some features might not work as expected
 - Error handling might be incomplete
-
-## Planned Features
-
-Future development plans include:
-- Spatial effects (like the original amBX)
-- Game integration
-- Screen capture and ambient lighting
-- Enhanced 3D positioning system
-- More customization options
-
-However, as this is an AI-assisted project, implementing these features will depend on successfully working with AI to add them without breaking existing functionality.
-
-## Open Source and Collaboration
-
-Feel free to fork this repository and modify it however you like! This project is meant to be:
-- An experiment in AI-assisted development
-- A learning resource for others
-- A foundation for community improvements
-- Open to any and all modifications
-
-If you're interested in the intersection of AI and development, this project serves as a real-world example of what's possible.
 
 ## Features
 
@@ -46,12 +29,31 @@ If you're interested in the intersection of AI and development, this project ser
 - Color Management: Easy color control for assigned devices
 - Real-time Updates: See your changes instantly
 
+### New Features
+- Dynamic Effects System: Multiple built-in lighting effects
+  - RadialFade: Lights fade based on distance from user
+  - Wave: Rippling wave pattern from user position
+  - Ripple: Expanding ring effect from user position
+  - LayerCascade: Cascading effect across layers
+- User Position System: Set your position in the grid for position-based effects
+- Effect Controls: Adjust speed and intensity of effects
+- Enhanced Real-time Updates: Smooth 60 FPS effect rendering
+
+## Planned Features
+
+Future development plans include:
+- Game integration
+- Screen capture and ambient lighting
+- Enhanced 3D positioning system
+- More customization options
+- Additional spatial effects
+
 ## Installation
 
 1. Download the plugin file (Lightscape.dll)
 2. Place it in your OpenRGB plugins folder:
    - Windows: `%APPDATA%\OpenRGB\plugins`
-   - Linux: `~/.config/OpenRGB/plugins`
+   - Linux: `~/.config/OpenRGB\plugins`
    - MacOS: `~/Library/Application Support/OpenRGB/plugins`
 3. Restart OpenRGB
 
@@ -74,6 +76,24 @@ cd OpenRGB/plugins/Lightscape
 qmake
 make
 ```
+
+## Supporting Development
+
+This project is developed using AI assistance, which involves subscription and API costs. If you find Lightscape useful and would like to support its continued development, you're welcome to contribute via:
+
+<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="Wolfieee" data-color="#40DCA5" data-emoji="🍕"  data-font="Poppins" data-text="Buy me a pizza" data-outline-color="#000000" data-font-color="#ffffff" data-coffee-color="#FFDD00" ></script>
+
+Your support helps maintain the AI tools that make this development possible, but the plugin will always remain free and open source regardless.
+
+## Open Source and Collaboration
+
+Feel free to fork this repository and modify it however you like! This project is meant to be:
+- An experiment in AI-assisted development
+- A learning resource for others
+- A foundation for community improvements
+- Open to any and all modifications
+
+If you're interested in the intersection of AI and development, this project serves as a real-world example of what's possible.
 
 ## Development Status
 
