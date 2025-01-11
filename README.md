@@ -57,7 +57,8 @@ Future development plans include:
 
 This project is developed using AI assistance, which involves subscription and API costs. If you find Lightscape useful and would like to support its continued development, you're welcome to contribute via:
 
-<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="Wolfieee" data-color="#40DCA5" data-emoji="🍕"  data-font="Poppins" data-text="Buy me a pizza" data-outline-color="#000000" data-font-color="#ffffff" data-coffee-color="#FFDD00" ></script>
+<a href="https://www.buymeacoffee.com/Wolfieee" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-green.png" alt="Buy Me A Pizza" style="height: 60px !important;width: 217px !important;" ></a>
+
 
 Your support helps maintain the AI tools that make this development possible, but the plugin will always remain free and open source regardless.
 
