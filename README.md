@@ -28,8 +28,6 @@ As such:
 - Flexible Control: Assign whole devices, zones, or individual LEDs to grid positions
 - Color Management: Easy color control for assigned devices
 - Real-time Updates: See your changes instantly
-
-### New Features
 - Dynamic Effects System: Multiple built-in lighting effects
   - RadialFade: Lights fade based on distance from user
   - Wave: Rippling wave pattern from user position
@@ -52,30 +50,8 @@ Future development plans include:
 
 1. Download the plugin file (Lightscape.dll)
 2. Place it in your OpenRGB plugins folder:
-   - Windows: `%APPDATA%\OpenRGB\plugins`
-   - Linux: `~/.config/OpenRGB\plugins`
-   - MacOS: `~/Library/Application Support/OpenRGB/plugins`
-3. Restart OpenRGB
+3. Run OpenRGB
 
-## Build Instructions
-
-### Prerequisites
-- Qt 5.15 or newer
-- OpenRGB source code
-- C++ compiler with C++17 support
-
-### Building
-1. Clone or copy the plugin directory into OpenRGB's `plugins` folder
-2. Open the project in Qt Creator
-3. Configure the project with your Qt kit
-4. Build the project
-
-### Manual Build
-```bash
-cd OpenRGB/plugins/Lightscape
-qmake
-make
-```
 
 ## Supporting Development
 
@@ -99,11 +75,6 @@ If you're interested in the intersection of AI and development, this project ser
 
 This plugin is in very early alpha stage. Expect bugs and incomplete features. Please report any issues or feature requests through GitHub issues, but understand that as this is an AI-assisted project, fixes and updates may take time as we experiment with the best ways to implement changes.
 
-## Acknowledgments
-
-- Built with assistance from Claude AI (Anthropic)
-- Inspired by Philips amBX Gaming Peripherals
-- Made possible by the OpenRGB framework
 
 ## License
 
