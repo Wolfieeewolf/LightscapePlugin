@@ -53,16 +53,6 @@ Future development plans include:
 3. Run OpenRGB
 
 
-## Supporting Development
-
-This project is developed using AI assistance, which involves subscription and API costs. If you find Lightscape useful and would like to support its continued development, you're welcome to contribute via:
-
-<a href="https://www.buymeacoffee.com/Wolfieee"><img src="https://img.buymeacoffee.com/button-api/?text=Buy me a pizza&emoji=🍕&slug=Wolfieee&button_colour=40DCA5&font_colour=ffffff&font_family=Poppins&outline_colour=000000&coffee_colour=FFDD00" /></a>
-
-
-
-Your support helps maintain the AI tools that make this development possible, but the plugin will always remain free and open source regardless.
-
 ## Open Source and Collaboration
 
 Feel free to fork this repository and modify it however you like! This project is meant to be:
@@ -76,6 +66,20 @@ If you're interested in the intersection of AI and development, this project ser
 ## Development Status
 
 This plugin is in very early alpha stage. Expect bugs and incomplete features. Please report any issues or feature requests through GitHub issues, but understand that as this is an AI-assisted project, fixes and updates may take time as we experiment with the best ways to implement changes.
+
+
+## Supporting Development
+
+This project is developed using AI assistance, which involves subscription and API costs. If you find Lightscape useful and would like to support its continued development, you're welcome to contribute via:
+
+
+
+<a href="https://www.buymeacoffee.com/Wolfieee"><img src="https://img.buymeacoffee.com/button-api/?text=Buy me a pizza&emoji=🍕&slug=Wolfieee&button_colour=40DCA5&font_colour=ffffff&font_family=Poppins&outline_colour=000000&coffee_colour=FFDD00" /></a>
+
+
+
+Your support helps maintain the AI tools that make this development possible, but the plugin will always remain free and open source regardless.
+
 
 
 ## License
