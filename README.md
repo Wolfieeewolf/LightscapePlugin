@@ -10,8 +10,7 @@ This project was inspired by the Philips amBX Gaming peripheral system from 2006
 
 This entire plugin was created using assistance from:
 - [Claude AI](https://claude.ai)
-- [ChatGPT](https://chat.openai.com)
-- [DeepSeek](https://www.deepseek.com/)
+
 
 As such:
 - This is a very early alpha version
@@ -28,23 +27,13 @@ As such:
 - Flexible Control: Assign whole devices, zones, or individual LEDs to grid positions
 - Color Management: Easy color control for assigned devices
 - Real-time Updates: See your changes instantly
-- Dynamic Effects System: Multiple built-in lighting effects
-  - RadialFade: Lights fade based on distance from user
-  - Wave: Rippling wave pattern from user position
-  - Ripple: Expanding ring effect from user position
-  - LayerCascade: Cascading effect across layers
 - User Position System: Set your position in the grid for position-based effects
-- Effect Controls: Adjust speed and intensity of effects
-- Enhanced Real-time Updates: Smooth 60 FPS effect rendering
 
-## Planned Features
 
-Future development plans include:
-- Game integration
-- Screen capture and ambient lighting
-- Enhanced 3D positioning system
-- More customization options
-- Additional spatial effects
+## Future Updates
+
+- Better Effects System - So far only test effect working
+- See docs for roadmap and handover information
 
 ## Installation
 
