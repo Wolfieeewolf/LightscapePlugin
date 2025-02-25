@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>DeviceControlWidget</class>
+ <widget class="QWidget" name="DeviceControlWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>300</height>
+   </rect>
+  </property>
+  <layout class="QVBoxLayout" name="controlLayout">
+   <item>
+    <widget class="QGroupBox" name="deviceGroupBox">
+     <property name="title">
+      <string>Device Control</string>
+     </property>
+     <layout class="QVBoxLayout" name="deviceLayout">
+      <item>
+       <layout class="QHBoxLayout" name="deviceTypeLayout">
+        <item>
+         <widget class="QLabel" name="deviceTypeLabel">
+          <property name="text">
+           <string>Type:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QComboBox" name="deviceTypeCombo">
+          <item>
+           <property name="text">
+            <string>RGB Devices</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Non-RGB Devices</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="QComboBox" name="deviceCombo"/>
+      </item>
+      <item>
+       <widget class="QWidget" name="rgbControls">
+        <layout class="QVBoxLayout" name="rgbLayout">
+         <item>
+          <widget class="QRadioButton" name="wholeDeviceRadio">
+           <property name="text">
+            <string>Whole Device</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QRadioButton" name="zoneRadio">
+           <property name="text">
+            <string>Zone</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QRadioButton" name="ledRadio">
+           <property name="text">
+            <string>LED</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="selectionCombo"/>
+         </item>
+        </layout>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>EffectWidget</class>
+ <widget class="QWidget" name="EffectWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>350</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <!-- Preview Section -->
+    <widget class="QGroupBox" name="previewBox">
+     <property name="title">
+      <string>Preview</string>
+     </property>
+     <layout class="QVBoxLayout" name="previewLayout">
+      <item>
+       <layout class="QHBoxLayout" name="previewHeaderLayout">
+        <item>
+         <widget class="QCheckBox" name="previewCheckBox">
+          <property name="text">
+           <string>Enable Preview</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="reduceFPSCheckBox">
+          <property name="text">
+           <string>Reduce FPS</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="QWidget" name="previewWidget" native="true">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>150</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <!-- Effects List -->
+   <item>
+    <widget class="QGroupBox" name="effectsBox">
+     <property name="title">
+      <string>Effects</string>
+     </property>
+     <layout class="QVBoxLayout" name="effectsLayout">
+      <item>
+       <widget class="QListWidget" name="effectsList"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <!-- Device Selection -->
+   <item>
+    <widget class="QGroupBox" name="devicesBox">
+     <property name="title">
+      <string>Effect Devices</string>
+     </property>
+     <layout class="QVBoxLayout" name="devicesLayout">
+      <item>
+       <layout class="QHBoxLayout" name="deviceHeaderLayout">
+        <item>
+         <widget class="QPushButton" name="selectAllButton">
+          <property name="text">
+           <string>Select All</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="QScrollArea" name="deviceScrollArea">
+        <property name="widgetResizable">
+         <bool>true</bool>
+        </property>
+        <widget class="QWidget" name="deviceScrollContent">
+         <layout class="QVBoxLayout" name="deviceListLayout"/>
+        </widget>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <!-- Effect Controls Container -->
+   <item>
+    <widget class="QGroupBox" name="controlsBox">
+     <property name="title">
+      <string>Effect Controls</string>
+     </property>
+     <layout class="QVBoxLayout" name="controlsLayout"/>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

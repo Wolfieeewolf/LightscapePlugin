@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RCC>
+    <qresource prefix="/">
+        <file>images/Lightscape64.png</file>
+        <file>images/Lightscape16.png</file>
+    </qresource>
+</RCC>
