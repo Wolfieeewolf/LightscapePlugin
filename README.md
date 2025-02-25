@@ -73,4 +73,16 @@ Your support helps maintain the AI tools that make this development possible, bu
 
 ## License
 
-This project is open-source software. Feel free to experiment, modify, and improve upon it!
+This project is licensed under the MIT License. You are free to:
+- Use the software commercially
+- Modify the software
+- Distribute the software
+- Use the software for private use
+- Use under patent claims
+
+The only requirements are that you:
+- Include the original copyright notice
+- Include the license text if you distribute the software
+- Provide attribution to the original creators
+
+For full license details, please see the LICENSE file in the repository.
