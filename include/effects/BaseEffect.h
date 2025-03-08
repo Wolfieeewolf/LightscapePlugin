@@ -2,7 +2,7 @@
 
 #include <QWidget>
 #include <QJsonObject>
-#include "core/DeviceManager.h"
+#include "devices/DeviceManager.h"
 #include "grid/SpatialGrid.h"
 #include "effects/EffectInfo.h"
 

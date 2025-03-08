@@ -5,7 +5,7 @@
 #include <QPushButton>
 #include <QMap>
 #include "devices/NonRGBDeviceManager.h"
-#include "core/DeviceManager.h"
+#include "devices/DeviceManager.h"
 
 namespace Ui {
 class DeviceControlWidget;

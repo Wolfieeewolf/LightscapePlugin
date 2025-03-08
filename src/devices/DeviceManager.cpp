@@ -1,4 +1,4 @@
-#include "core/DeviceManager.h"
+#include "devices/DeviceManager.h"
 
 DeviceManager::DeviceManager(ResourceManager* resourceManager, QObject* parent)
     : QObject(parent)

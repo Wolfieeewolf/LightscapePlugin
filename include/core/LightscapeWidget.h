@@ -2,7 +2,7 @@
 
 #include <QWidget>
 #include <QSplitter>
-#include "core/DeviceManager.h"
+#include "devices/DeviceManager.h"
 #include "grid/SpatialGrid.h"
 #include "grid/GridPanel.h"
 #include "devices/DeviceControlWidget.h"

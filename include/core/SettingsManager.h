@@ -5,7 +5,7 @@
 #include <QString>
 #include "grid/SpatialGrid.h"
 #include "devices/NonRGBDeviceManager.h"
-#include "core/DeviceManager.h"
+#include "devices/DeviceManager.h"
 
 class SettingsManager : public QObject
 {

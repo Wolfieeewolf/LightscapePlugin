@@ -5,7 +5,7 @@
 #include <QElapsedTimer>
 #include <QList>
 #include "effects/BaseEffect.h"
-#include "core/DeviceManager.h"
+#include "devices/DeviceManager.h"
 #include "grid/SpatialGrid.h"
 
 namespace Lightscape {

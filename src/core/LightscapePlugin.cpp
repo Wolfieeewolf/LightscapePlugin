@@ -7,6 +7,7 @@
 \*---------------------------------------------------------*/
 
 #include "core/LightscapePlugin.h"
+#include "devices/DeviceManager.h"
 #include "core/LightscapeWidget.h"
 #include "core/ThemeManager.h"
 #include <QApplication>

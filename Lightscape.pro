@@ -109,7 +109,7 @@ INCLUDEPATH +=                                                                  
 HEADERS +=                                                                                      \
     include/core/Types.h                                                                        \
     include/core/LightscapePlugin.h                                                             \
-    include/core/DeviceManager.h                                                                \
+    include/devices/DeviceManager.h                                                              \
     include/core/LightscapeWidget.h                                                             \
     include/core/SettingsManager.h                                                              \
     include/core/ThemeManager.h                                                                 \
@@ -117,7 +117,7 @@ HEADERS +=                                                                      
     include/core/TrayMenuManager.h                                                              \
     include/core/StateManager.h                                                                 \
     include/core/VersionManager.h                                                               \
-    include/core/ReferencePointSelector.h                                                       \
+    include/grid/ReferencePointSelector.h                                                        \
     include/grid/GridTypes.h                                                                    \
     include/grid/SpatialGrid.h                                                                  \
     include/grid/GridPanel.h                                                                    \
@@ -142,7 +142,7 @@ HEADERS +=                                                                      
 #-----------------------------------------------------------------------------------------------#
 SOURCES +=                                                                                      \
     src/core/LightscapePlugin.cpp                                                               \
-    src/core/DeviceManager.cpp                                                                  \
+    src/devices/DeviceManager.cpp                                                                \
     src/core/LightscapeWidget.cpp                                                               \
     src/core/SettingsManager.cpp                                                                \
     src/core/ThemeManager.cpp                                                                   \
@@ -150,7 +150,7 @@ SOURCES +=                                                                      
     src/core/TrayMenuManager.cpp                                                                \
     src/core/StateManager.cpp                                                                   \
     src/core/VersionManager.cpp                                                                 \
-    src/core/ReferencePointSelector.cpp                                                         \
+    src/grid/ReferencePointSelector.cpp                                                           \
     src/grid/SpatialGrid.cpp                                                                    \
     src/grid/GridPanel.cpp                                                                      \
     src/grid/GridSettingsDialog.cpp                                                             \

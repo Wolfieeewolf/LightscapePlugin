@@ -6,7 +6,7 @@
 #include "effects/EffectList.h"
 #include "effects/EffectRegistry.h"
 #include "effects/BaseEffect.h"
-#include "core/DeviceManager.h"
+#include "devices/DeviceManager.h"
 #include "grid/SpatialGrid.h"
 
 namespace Ui {

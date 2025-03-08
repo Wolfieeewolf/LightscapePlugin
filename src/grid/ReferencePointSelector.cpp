@@ -1,4 +1,4 @@
-#include "core/ReferencePointSelector.h"
+#include "grid/ReferencePointSelector.h"
 #include <QDataStream>
 #include <QBuffer>
 

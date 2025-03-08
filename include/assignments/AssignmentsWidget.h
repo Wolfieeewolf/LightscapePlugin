@@ -3,7 +3,7 @@
 #include <QWidget>
 #include <QListWidgetItem>
 #include <QMap>
-#include "core/DeviceManager.h"
+#include "devices/DeviceManager.h"
 #include "grid/SpatialGrid.h"
 #include "grid/GridTypes.h"
 #include "core/Types.h"

@@ -23,7 +23,7 @@ When working on this project, adhere to these principles:
 
 ## Current Status
 
-We have completed Phase 1 and fixed several important issues:
+We have completed Phase 1 and Phase 2 and fixed several important issues:
 
 - ✓ Created the `BaseEffect` abstract class for all spatial effects
 - ✓ Implemented a basic `TestEffect` that demonstrates position-based coloring
@@ -35,6 +35,7 @@ We have completed Phase 1 and fixed several important issues:
 - ✓ Fixed the plugin interface to match the required API
 - ✓ Fixed the DLL naming issue (removed the version number from the filename)
 - ✓ Fixed color display in the assignments widget (RGB vs BGR format)
+- ✓ Reorganized the file structure to follow a more logical categorization by functionality
 
 ## Coding Standards
 
@@ -45,7 +46,13 @@ We follow these coding standards to maintain consistency with OpenRGB:
 - Headers (.h) go in the include/ directory
 - Implementations (.cpp) go in the src/ directory
 - Keep matching directory structures in include/ and src/
-- Group related files in subdirectories (e.g., effects/TestEffect/)
+- Group related files in subdirectories based on functionality
+- Each file should be in the directory that matches its purpose:
+  - `core/` - Core plugin functionality
+  - `devices/` - Device management
+  - `grid/` - Spatial grid system
+  - `effects/` - Effects system
+  - `assignments/` - Device assignment UI
 
 ### 2. File Headers
 
@@ -138,7 +145,7 @@ Do not manually construct RGB values with bitwise operations as this can lead to
 
 ### Repository Structure
 
-The project is now set up as a standalone repository with OpenRGB as a Git submodule:
+The project is set up as a standalone repository with OpenRGB as a Git submodule, with files organized by functionality:
 
 ```
 LightscapePlugin/
@@ -146,12 +153,17 @@ LightscapePlugin/
 ├── images/             # Image resources
 ├── include/            # Header files organized by module
 │   ├── assignments/    # Device assignment UI
-│   ├── core/           # Core plugin functionality
+│   ├── core/           # Core plugin functionality 
 │   ├── devices/        # Device management
 │   ├── effects/        # Effects system
 │   └── grid/           # Spatial grid system
 ├── OpenRGB/            # OpenRGB submodule
 ├── src/                # Source files (same structure as include)
+│   ├── assignments/    # Assignment implementation
+│   ├── core/           # Core implementation
+│   ├── devices/        # Device implementation 
+│   ├── effects/        # Effect implementation
+│   └── grid/           # Grid implementation
 ├── ui/                 # UI definition files
 ├── resources.qrc       # Resource file
 └── Lightscape.pro      # Project file
@@ -164,36 +176,44 @@ LightscapePlugin/
    - Initializes all plugin components
    - Manages resources and plugin lifecycle
 
-2. **include/effects/BaseEffect.h & src/effects/BaseEffect.cpp**
+2. **include/devices/DeviceManager.h & src/devices/DeviceManager.cpp**
+   - Manages all RGB and non-RGB devices
+   - Handles device assignments and control
+
+3. **include/effects/BaseEffect.h & src/effects/BaseEffect.cpp**
    - Abstract base class that all effects inherit from
    - Provides position-based color calculation
    - Handles common effect properties and device application
 
-3. **include/effects/EffectManager.h & src/effects/EffectManager.cpp**
+4. **include/effects/EffectManager.h & src/effects/EffectManager.cpp**
    - Singleton manager for effects
    - Controls update timing
    - Applies effects to devices
 
-4. **include/effects/TestEffect/TestEffect.h & src/effects/TestEffect/TestEffect.cpp**
+5. **include/effects/TestEffect/TestEffect.h & src/effects/TestEffect/TestEffect.cpp**
    - Example effect implementation
    - Shows basic spatial coloring based on grid position
 
-5. **include/effects/EffectRegistry.h & src/effects/EffectRegistry.cpp**
+6. **include/effects/EffectRegistry.h & src/effects/EffectRegistry.cpp**
    - Registration system for effects
    - Manages effect creation
 
-6. **include/core/SettingsManager.h & src/core/SettingsManager.cpp**
+7. **include/core/SettingsManager.h & src/core/SettingsManager.cpp**
    - Handles saving and loading of plugin state
    - Implements persistent device assignments across OpenRGB restarts
    - Uses device names and other identifiers for reliable persistence
 
-7. **include/grid/SpatialGrid.h & src/grid/SpatialGrid.cpp**
+8. **include/grid/SpatialGrid.h & src/grid/SpatialGrid.cpp**
    - 3D grid system for positioning devices
    - Maintains device assignments and positions
 
-8. **include/assignments/AssignmentsWidget.h & src/assignments/AssignmentsWidget.cpp**
-   - UI for managing device assignments
-   - Handles displaying and modifying device assignments
+9. **include/grid/ReferencePointSelector.h & src/grid/ReferencePointSelector.cpp**
+   - Manages reference points for spatial effects
+   - Enables selection and configuration of reference points in 3D space
+
+10. **include/assignments/AssignmentsWidget.h & src/assignments/AssignmentsWidget.cpp**
+    - UI for managing device assignments
+    - Handles displaying and modifying device assignments
 
 ## Phase-by-Phase Implementation Plan
 
@@ -210,7 +230,15 @@ LightscapePlugin/
 - ✓ Fix DLL naming issues
 - ✓ Fix color display in assignment widget (RGB vs BGR format)
 
-### Phase 2: Effect Manager Enhancements (NEXT PHASE)
+### Phase 2: Code Reorganization ✓ (COMPLETED)
+
+- ✓ Reorganize files into logical directories based on functionality
+- ✓ Move DeviceManager to devices/ directory
+- ✓ Move ReferencePointSelector to grid/ directory
+- ✓ Update include paths throughout the codebase
+- ✓ Ensure clean compilation after reorganization
+
+### Phase 3: Effect Manager Enhancements (NEXT PHASE)
 
 This phase focuses on improving the EffectManager to handle more sophisticated effect control:
 
@@ -231,7 +259,7 @@ This phase focuses on improving the EffectManager to handle more sophisticated e
 - include/effects/BaseEffect.h & src/effects/BaseEffect.cpp
 - Create new: include/effects/PreviewRenderer.h & src/effects/PreviewRenderer.cpp
 
-### Phase 3: First Spatial Effect - SpatialRainbow
+### Phase 4: First Spatial Effect - SpatialRainbow
 
 Implement the first full spatial effect that demonstrates the system's capabilities:
 
@@ -252,7 +280,7 @@ Implement the first full spatial effect that demonstrates the system's capabilit
 - src/effects/SpatialRainbow/SpatialRainbow.cpp
 - ui/effects/SpatialRainbow.ui (optional)
 
-### Phase 4: Additional Spatial Effects
+### Phase 5: Additional Spatial Effects
 
 Expand the system with more spatial effects:
 
@@ -272,7 +300,7 @@ Expand the system with more spatial effects:
 - Appropriate .h and .cpp files for each effect in subdirectories
 - Corresponding UI files if needed
 
-### Phase 5: Effect Layering and Composition
+### Phase 6: Effect Layering and Composition
 
 Enable multiple effects to be combined:
 
@@ -518,6 +546,10 @@ Common issues and solutions:
 7. **printf format specifier errors**
    - Use %d for integers instead of %zu for size_t
    - Cast size_t to int: `static_cast<int>(container.size())`
+
+8. **Include path errors**
+   - Make sure all files use the correct include paths after reorganization
+   - Include paths should match the directory structure (e.g., "devices/DeviceManager.h")
 
 ## Resources
 
