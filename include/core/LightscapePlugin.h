@@ -1,8 +1,17 @@
+/*---------------------------------------------------------*\
+| Lightscape Plugin for OpenRGB                             |
+|                                                           |
+| LightscapePlugin.h                                        |
+|                                                           |
+| Main plugin class implementing OpenRGBPluginInterface     |
+\*---------------------------------------------------------*/
+
 #pragma once
 
 #include <QObject>
 #include <QtPlugin>
 #include "OpenRGBPluginInterface.h"
+#include "ResourceManager.h"
 #include "core/ResourceHandler.h"
 #include "core/TrayMenuManager.h"
 #include "core/StateManager.h"
@@ -19,7 +28,7 @@ class LightscapePlugin : public QObject, public OpenRGBPluginInterface
 
 public:
     LightscapePlugin();
-    ~LightscapePlugin();
+    ~LightscapePlugin() override;
 
     // Plugin Interface Functions
     OpenRGBPluginInfo GetPluginInfo() override;
@@ -29,6 +38,9 @@ public:
     QWidget* GetWidget() override;
     QMenu* GetTrayMenu() override;
     void Unload() override;
+
+    static bool DarkTheme;
+    static ResourceManager* RMPointer;
 
 private slots:
     void handleResourceError(const QString& error);
@@ -40,7 +52,6 @@ private:
     bool initializePlugin(bool dark_theme, ResourceManager* resource_manager);
     void handlePluginError(const QString& error);
 
-    bool dark_theme;
     ResourceHandler* resource_handler;
     TrayMenuManager* tray_manager;
     StateManager* state_manager;

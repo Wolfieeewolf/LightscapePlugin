@@ -1,3 +1,11 @@
+/*---------------------------------------------------------*\
+| Lightscape Plugin for OpenRGB                             |
+|                                                           |
+| LightscapePlugin.cpp                                      |
+|                                                           |
+| Main plugin implementation                                |
+\*---------------------------------------------------------*/
+
 #include "core/LightscapePlugin.h"
 #include "core/LightscapeWidget.h"
 #include "core/ThemeManager.h"
@@ -5,14 +13,18 @@
 #include <QMenu>
 #include <QMessageBox>
 
+bool LightscapePlugin::DarkTheme = false;
+ResourceManager* LightscapePlugin::RMPointer = nullptr;
+
 LightscapePlugin::LightscapePlugin() :
-    dark_theme(false),
     resource_handler(new ResourceHandler(this)),
     tray_manager(nullptr),
     state_manager(new StateManager(this)),
     widget(nullptr),
     device_manager(nullptr)
 {
+    printf("[Lightscape] Plugin constructor.\n");
+    
     connect(resource_handler, &ResourceHandler::resourceError,
             this, &LightscapePlugin::handleResourceError);
             
@@ -22,16 +34,19 @@ LightscapePlugin::LightscapePlugin() :
 
 LightscapePlugin::~LightscapePlugin()
 {
+    printf("[Lightscape] Plugin destructor.\n");
     Unload();
 }
 
 OpenRGBPluginInfo LightscapePlugin::GetPluginInfo()
 {
+    printf("[Lightscape] Loading plugin info.\n");
+    
     OpenRGBPluginInfo info;
     info.Name = "Lightscape";
     info.Description = "3D Spatial LED Control System";
-    info.Version = VersionManager::getPluginVersion().toStdString();
-    info.Commit = "experimental";
+    info.Version = VERSION_STRING;
+    info.Commit = GIT_COMMIT_ID;
     info.URL = "https://openrgb.org";
     info.Icon.load(":/images/Lightscape64.png");
     
@@ -45,11 +60,28 @@ OpenRGBPluginInfo LightscapePlugin::GetPluginInfo()
 
 unsigned int LightscapePlugin::GetPluginAPIVersion()
 {
+    printf("[Lightscape] Loading plugin API version.\n");
     return OPENRGB_PLUGIN_API_VERSION;
 }
 
 void LightscapePlugin::Load(ResourceManagerInterface* resource_manager_ptr)
 {
+    printf("[Lightscape] Loading plugin.\n");
+    
+    // Determine dark theme from application palette
+    bool dark_theme = QApplication::palette().window().color().value() < 128;
+    DarkTheme = dark_theme;
+    
+    // Cast to ResourceManager since we need specific functionality
+    ResourceManager* resource_manager = dynamic_cast<ResourceManager*>(resource_manager_ptr);
+    if (!resource_manager)
+    {
+        handlePluginError("Failed to cast ResourceManagerInterface to ResourceManager");
+        return;
+    }
+    
+    RMPointer = resource_manager;
+    
     state_manager->setState(StateManager::PluginState::Initializing);
     
     if (!VersionManager::isApiVersionCompatible(OPENRGB_PLUGIN_API_VERSION))
@@ -58,10 +90,7 @@ void LightscapePlugin::Load(ResourceManagerInterface* resource_manager_ptr)
         return;
     }
 
-    bool dark = QApplication::palette().window().color().value() < 128;
-
-    ResourceManager* manager = dynamic_cast<ResourceManager*>(resource_manager_ptr);
-    if (!initializePlugin(dark, manager))
+    if (!initializePlugin(dark_theme, resource_manager))
     {
         return;
     }
@@ -72,8 +101,8 @@ void LightscapePlugin::Load(ResourceManagerInterface* resource_manager_ptr)
 
 bool LightscapePlugin::initializePlugin(bool dark, ResourceManager* manager)
 {
-    dark_theme = dark;
-
+    printf("[Lightscape] Initializing plugin.\n");
+    
     if (!resource_handler->initialize(manager))
     {
         handlePluginError(QString("Failed to initialize resource handler: ") + 
@@ -84,13 +113,10 @@ bool LightscapePlugin::initializePlugin(bool dark, ResourceManager* manager)
     // Initialize device management
     device_manager = new DeviceManager(resource_handler->getResourceManager(), this);
 
-    // Initialize device management
-    device_manager = new DeviceManager(resource_handler->getResourceManager(), this);
-
     if (widget == nullptr)
     {
         widget = new LightscapeWidget(resource_handler->getResourceManager());
-        widget->setStyleSheet(ThemeManager::getStyleSheet(dark_theme));
+        widget->setStyleSheet(ThemeManager::getStyleSheet(dark));
         widget->initializeGrid();
     }
 
@@ -108,6 +134,8 @@ bool LightscapePlugin::initializePlugin(bool dark, ResourceManager* manager)
 
 QWidget* LightscapePlugin::GetWidget()
 {
+    printf("[Lightscape] Creating widget.\n");
+    
     if (state_manager->getCurrentState() != StateManager::PluginState::Running)
     {
         qWarning() << "Attempting to get widget while plugin is not running";
@@ -118,6 +146,8 @@ QWidget* LightscapePlugin::GetWidget()
 
 QMenu* LightscapePlugin::GetTrayMenu()
 {
+    printf("[Lightscape] Creating tray menu.\n");
+    
     if (state_manager->getCurrentState() != StateManager::PluginState::Running || 
         !tray_manager)
     {
@@ -128,6 +158,8 @@ QMenu* LightscapePlugin::GetTrayMenu()
 
 void LightscapePlugin::Unload()
 {
+    printf("[Lightscape] Unloading plugin.\n");
+    
     state_manager->setState(StateManager::PluginState::Disabled);
 
     if (widget != nullptr)
@@ -187,6 +219,8 @@ void LightscapePlugin::handleStateChanged(StateManager::PluginState newState)
 
 void LightscapePlugin::handlePluginError(const QString& error)
 {
+    printf("[Lightscape] Plugin error: %s\n", error.toStdString().c_str());
+    
     qWarning() << "Plugin error:" << error;
     state_manager->setError(error);
     

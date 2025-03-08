@@ -23,7 +23,7 @@ When working on this project, adhere to these principles:
 
 ## Current Status
 
-We have completed Phase 1 of the implementation and made several key enhancements:
+We have completed Phase 1 and fixed several important issues:
 
 - ✓ Created the `BaseEffect` abstract class for all spatial effects
 - ✓ Implemented a basic `TestEffect` that demonstrates position-based coloring
@@ -31,6 +31,108 @@ We have completed Phase 1 of the implementation and made several key enhancement
 - ✓ Updated the `EffectWidget` UI to work with the new effect system
 - ✓ Enhanced state persistence through `SettingsManager` for reliable device assignment
 - ✓ Restructured the project to use OpenRGB as a Git submodule for easier development
+- ✓ Updated the codebase to match OpenRGB coding standards
+- ✓ Fixed the plugin interface to match the required API
+- ✓ Fixed the DLL naming issue (removed the version number from the filename)
+- ✓ Fixed color display in the assignments widget (RGB vs BGR format)
+
+## Coding Standards
+
+We follow these coding standards to maintain consistency with OpenRGB:
+
+### 1. File Organization
+
+- Headers (.h) go in the include/ directory
+- Implementations (.cpp) go in the src/ directory
+- Keep matching directory structures in include/ and src/
+- Group related files in subdirectories (e.g., effects/TestEffect/)
+
+### 2. File Headers
+
+All source and header files should start with this standard header:
+
+```cpp
+/*---------------------------------------------------------*\
+| Lightscape Plugin for OpenRGB                             |
+|                                                           |
+| fileName.h/cpp                                            |
+|                                                           |
+| Class description                                         |
+\*---------------------------------------------------------*/
+```
+
+### 3. Naming Conventions
+
+- **Member Variables**: Use snake_case with underscore prefix
+  - Example: `_variable_name`, `_device_manager`
+  
+- **Function Parameters**: Use snake_case
+  - Example: `parameter_name`, `device_index`
+  
+- **Class Names**: Use PascalCase
+  - Example: `BaseEffect`, `EffectManager`
+  
+- **Method Names**: Use camelCase
+  - Example: `getColorForPosition()`, `calculateDistance()`
+  
+- **File Names**: Use snake_case
+  - Example: `base_effect.h`, `effect_manager.cpp`
+
+### 4. Debug Output
+
+Use printf-style debug output with consistent format:
+
+```cpp
+printf("[Lightscape][ModuleName] Message text.\n");
+```
+
+For example:
+```cpp
+printf("[Lightscape][EffectManager] Starting effect: %s\n", effect_id.toStdString().c_str());
+```
+
+### 5. Static Variables
+
+Static variables should be declared at the top of implementation files:
+
+```cpp
+bool ClassName::StaticVariable = false;
+ResourceManager* ClassName::RMPointer = nullptr;
+```
+
+### 6. OpenRGB Plugin Interface
+
+The plugin must implement the OpenRGBPluginInterface with these methods:
+```cpp
+OpenRGBPluginInfo GetPluginInfo() override;
+unsigned int GetPluginAPIVersion() override;
+void Load(ResourceManagerInterface* resource_manager_ptr) override;
+QWidget* GetWidget() override;
+QMenu* GetTrayMenu() override;
+void Unload() override;
+```
+
+### 7. Working with Colors
+
+Always use the OpenRGB helper functions for color manipulation:
+```cpp
+// Creating colors (RGB order)
+RGBColor color = ToRGBColor(red, green, blue);
+
+// Extracting components
+int red = RGBGetRValue(color);
+int green = RGBGetGValue(color);
+int blue = RGBGetBValue(color);
+```
+
+Do not manually construct RGB values with bitwise operations as this can lead to RGB/BGR confusion.
+
+### 8. Code Structure
+
+- Keep functions focused on a single task
+- Keep function implementations under 50 lines when possible
+- Add appropriate comments for complex logic
+- Use the Q_UNUSED macro for unused parameters in Qt slots
 
 ## Project Structure
 
@@ -57,36 +159,41 @@ LightscapePlugin/
 
 ### Key Files to Understand
 
-1. **include/effects/BaseEffect.h & src/effects/BaseEffect.cpp**
+1. **include/core/LightscapePlugin.h & src/core/LightscapePlugin.cpp**
+   - Main plugin class that implements the OpenRGBPluginInterface
+   - Initializes all plugin components
+   - Manages resources and plugin lifecycle
+
+2. **include/effects/BaseEffect.h & src/effects/BaseEffect.cpp**
    - Abstract base class that all effects inherit from
    - Provides position-based color calculation
    - Handles common effect properties and device application
 
-2. **include/effects/EffectManager.h & src/effects/EffectManager.cpp**
+3. **include/effects/EffectManager.h & src/effects/EffectManager.cpp**
    - Singleton manager for effects
    - Controls update timing
    - Applies effects to devices
 
-3. **include/effects/TestEffect/TestEffect.h & src/effects/TestEffect/TestEffect.cpp**
+4. **include/effects/TestEffect/TestEffect.h & src/effects/TestEffect/TestEffect.cpp**
    - Example effect implementation
    - Shows basic spatial coloring based on grid position
 
-4. **include/effects/EffectRegistry.h & src/effects/EffectRegistry.cpp**
+5. **include/effects/EffectRegistry.h & src/effects/EffectRegistry.cpp**
    - Registration system for effects
    - Manages effect creation
 
-5. **include/core/SettingsManager.h & src/core/SettingsManager.cpp**
+6. **include/core/SettingsManager.h & src/core/SettingsManager.cpp**
    - Handles saving and loading of plugin state
    - Implements persistent device assignments across OpenRGB restarts
    - Uses device names and other identifiers for reliable persistence
 
-6. **include/grid/SpatialGrid.h & src/grid/SpatialGrid.cpp**
+7. **include/grid/SpatialGrid.h & src/grid/SpatialGrid.cpp**
    - 3D grid system for positioning devices
    - Maintains device assignments and positions
 
-7. **include/core/DeviceManager.h & src/core/DeviceManager.cpp**
-   - Manages device communication
-   - Provides methods to set colors on devices
+8. **include/assignments/AssignmentsWidget.h & src/assignments/AssignmentsWidget.cpp**
+   - UI for managing device assignments
+   - Handles displaying and modifying device assignments
 
 ## Phase-by-Phase Implementation Plan
 
@@ -98,6 +205,10 @@ LightscapePlugin/
 - ✓ Update EffectWidget for UI integration
 - ✓ Implement device assignment persistence across sessions
 - ✓ Restructure to use OpenRGB as a submodule
+- ✓ Standardize code to match OpenRGB style guidelines
+- ✓ Fix plugin interface to match OpenRGB API
+- ✓ Fix DLL naming issues
+- ✓ Fix color display in assignment widget (RGB vs BGR format)
 
 ### Phase 2: Effect Manager Enhancements (NEXT PHASE)
 
@@ -207,10 +318,17 @@ Note that OpenRGB's RGBColor is an unsigned int, not a struct with r/g/b members
 - `RGBGetGValue(color)` to extract the green component
 - `RGBGetBValue(color)` to extract the blue component
 
-### Example of a New Effect
+### Example of a New Effect (Updated Style)
 
 ```cpp
-// include/effects/NewEffect/NewEffect.h
+/*---------------------------------------------------------*\
+| Lightscape Plugin for OpenRGB                             |
+|                                                           |
+| NewEffect.h                                               |
+|                                                           |
+| Description of the new effect                             |
+\*---------------------------------------------------------*/
+
 #pragma once
 
 #include "effects/BaseEffect.h"
@@ -233,10 +351,10 @@ private slots:
 
 private:
     // UI controls
-    QSlider* parameterSlider;
+    QSlider* _parameter_slider = nullptr;
     
     // Effect parameters
-    int parameter = 50;
+    int _parameter = 50;
 };
 
 REGISTER_EFFECT(NewEffect::GetStaticInfo(), NewEffect)
@@ -245,7 +363,14 @@ REGISTER_EFFECT(NewEffect::GetStaticInfo(), NewEffect)
 ```
 
 ```cpp
-// src/effects/NewEffect/NewEffect.cpp
+/*---------------------------------------------------------*\
+| Lightscape Plugin for OpenRGB                             |
+|                                                           |
+| NewEffect.cpp                                             |
+|                                                           |
+| Implementation of the new effect                          |
+\*---------------------------------------------------------*/
+
 #include "effects/NewEffect/NewEffect.h"
 #include <QVBoxLayout>
 #include <QLabel>
@@ -255,21 +380,23 @@ namespace Lightscape {
 NewEffect::NewEffect(QWidget *parent)
     : BaseEffect(parent)
 {
+    printf("[Lightscape][NewEffect] Creating effect.\n");
+    
     // Set up UI
     QVBoxLayout* layout = new QVBoxLayout(this);
     
     QLabel* label = new QLabel("Parameter:", this);
-    parameterSlider = new QSlider(Qt::Horizontal, this);
-    parameterSlider->setRange(0, 100);
-    parameterSlider->setValue(parameter);
+    _parameter_slider = new QSlider(Qt::Horizontal, this);
+    _parameter_slider->setRange(0, 100);
+    _parameter_slider->setValue(_parameter);
     
     layout->addWidget(label);
-    layout->addWidget(parameterSlider);
+    layout->addWidget(_parameter_slider);
     
     setLayout(layout);
     
     // Connect signals
-    connect(parameterSlider, &QSlider::valueChanged, 
+    connect(_parameter_slider, &QSlider::valueChanged, 
             this, &NewEffect::onParameterChanged);
 }
 
@@ -288,19 +415,19 @@ EffectInfo NewEffect::GetStaticInfo()
 RGBColor NewEffect::getColorForPosition(const GridPosition& pos, float time)
 {
     // Calculate color based on position and parameters
-    float distance = calculateDistance(pos, referencePoint);
+    float distance = calculateDistance(pos, _reference_point);
     
     // Example calculation using position and parameter
     int r = (pos.x * 20 + static_cast<int>(time * 50)) % 255;
     int g = (pos.y * 20 + static_cast<int>(time * 30)) % 255;
-    int b = (parameter * 2 + static_cast<int>(distance * 10)) % 255;
+    int b = (_parameter * 2 + static_cast<int>(distance * 10)) % 255;
     
     return ToRGBColor(r, g, b);
 }
 
 void NewEffect::onParameterChanged(int value)
 {
-    parameter = value;
+    _parameter = value;
 }
 
 } // namespace Lightscape
@@ -368,6 +495,7 @@ Common issues and solutions:
 2. **Colors not updating**
    - Check EffectManager update loop
    - Verify device assignments in SpatialGrid
+   - Make sure to use OpenRGB helper functions for color operations (RGB vs BGR issues)
 
 3. **UI controls not working**
    - Ensure signals are connected
@@ -381,6 +509,15 @@ Common issues and solutions:
    - Remember that RGBColor is an unsigned int, not a struct
    - Use ToRGBColor() and RGBGetXValue() functions
    - Cast to int when assigning to JSON objects: `static_cast<int>(RGBGetRValue(color))`
+
+6. **Plugin not loading in OpenRGB**
+   - Check that the DLL name is correct (should be "Lightscape.dll" without version number)
+   - Verify API version matches OpenRGB's expectations
+   - Ensure all dependencies are available
+
+7. **printf format specifier errors**
+   - Use %d for integers instead of %zu for size_t
+   - Cast size_t to int: `static_cast<int>(container.size())`
 
 ## Resources
 

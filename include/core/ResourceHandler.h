@@ -1,3 +1,11 @@
+/*---------------------------------------------------------*\
+| Lightscape Plugin for OpenRGB                             |
+|                                                           |
+| ResourceHandler.h                                         |
+|                                                           |
+| Manages access to OpenRGB resources                       |
+\*---------------------------------------------------------*/
+
 #pragma once
 
 #include <QObject>
@@ -29,7 +37,7 @@ private:
     bool validateResourceManager(ResourceManager* manager);
     void setError(const QString& error);
 
-    ResourceManager* resource_manager;
-    bool initialized;
-    QString last_error;
+    ResourceManager* _resource_manager;
+    bool _initialized;
+    QString _last_error;
 };

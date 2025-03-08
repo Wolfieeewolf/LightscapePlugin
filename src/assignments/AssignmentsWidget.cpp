@@ -1,3 +1,11 @@
+/*---------------------------------------------------------*\
+| Lightscape Plugin for OpenRGB                             |
+|                                                           |
+| AssignmentsWidget.cpp                                     |
+|                                                           |
+| Implementation of device assignments management UI        |
+\*---------------------------------------------------------*/
+
 #include "assignments/AssignmentsWidget.h"
 #include "ui_AssignmentsWidget.h"
 #include "devices/DeviceControlWidget.h"
@@ -15,6 +23,8 @@ AssignmentsWidget::AssignmentsWidget(DeviceManager* deviceManager,
     , spatialGrid(spatialGrid)
     , deviceControlWidget(nullptr)
 {
+    printf("[Lightscape][AssignmentsWidget] Creating assignments widget.\n");
+    
     ui->setupUi(this);
     setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum);
     ui->assignmentList->setMinimumHeight(100);
@@ -36,6 +46,7 @@ AssignmentsWidget::AssignmentsWidget(DeviceManager* deviceManager,
 
 AssignmentsWidget::~AssignmentsWidget()
 {
+    printf("[Lightscape][AssignmentsWidget] Destroying assignments widget.\n");
     delete ui;
 }
 
@@ -59,8 +70,12 @@ void AssignmentsWidget::onColorButtonClicked()
         // Update UI
         currentItem->setBackground(color);
 
-        // Convert QColor to RGBColor (OpenRGB format: 0x00BBGGRR)
-        RGBColor rgbColor = (color.blue() << 16) | (color.green() << 8) | color.red();
+        // Convert QColor to RGBColor (OpenRGB format)
+        // OpenRGB format uses 0x00RRGGBB format
+        RGBColor rgbColor = ToRGBColor(color.red(), color.green(), color.blue());
+
+        printf("[Lightscape][AssignmentsWidget] Setting color: R=%d, G=%d, B=%d (0x%06X)\n", 
+               color.red(), color.green(), color.blue(), rgbColor);
 
         // Update color in spatial grid
         GridPosition pos = spatialGrid->GetSelectedPosition();
@@ -124,7 +139,8 @@ void AssignmentsWidget::onAssignButtonClicked()
     QString selectionName = control->getCurrentSelectionName();
     GridPosition pos = spatialGrid->GetSelectedPosition();
 
-    qDebug() << "Assigning device - Index:" << deviceIndex << "Type:" << (deviceType == Lightscape::DeviceType::RGB ? "RGB" : "Non-RGB");
+    printf("[Lightscape][AssignmentsWidget] Assigning device - Index: %d, Type: %s\n", 
+           deviceIndex, (deviceType == Lightscape::DeviceType::RGB ? "RGB" : "Non-RGB"));
 
     // Create assignment
     DeviceAssignment assignment(deviceIndex, deviceType);
@@ -156,16 +172,16 @@ void AssignmentsWidget::onAssignButtonClicked()
 
 void AssignmentsWidget::onRemoveButtonClicked()
 {
-    qDebug() << "Remove button clicked";
+    printf("[Lightscape][AssignmentsWidget] Remove button clicked\n");
     
     QListWidgetItem* currentItem = ui->assignmentList->currentItem();
     if (!currentItem) {
-        qDebug() << "No item selected";
+        printf("[Lightscape][AssignmentsWidget] No item selected\n");
         return;
     }
 
     if (!spatialGrid || !spatialGrid->GetSelectedButton()) {
-        qDebug() << "No grid position selected";
+        printf("[Lightscape][AssignmentsWidget] No grid position selected\n");
         return;
     }
 
@@ -173,11 +189,13 @@ void AssignmentsWidget::onRemoveButtonClicked()
     const auto& assignments = spatialGrid->GetAssignments(pos);
     int index = ui->assignmentList->row(currentItem);
     
-    qDebug() << "Removing assignment at index:" << index << "out of" << assignments.size() << "assignments";
+    printf("[Lightscape][AssignmentsWidget] Removing assignment at index: %d out of %d assignments\n", 
+           index, static_cast<int>(assignments.size()));
     
     if (index >= 0 && index < assignments.size()) {
         const auto& assignment = assignments[index];
-        qDebug() << "Removing device:" << deviceManager->GetDeviceName(assignment.device_index, assignment.device_type);
+        printf("[Lightscape][AssignmentsWidget] Removing device: %s\n", 
+               deviceManager->GetDeviceName(assignment.device_index, assignment.device_type).toStdString().c_str());
         
         // First remove from grid
         spatialGrid->RemoveAssignment(pos, index);
@@ -190,9 +208,9 @@ void AssignmentsWidget::onRemoveButtonClicked()
 
         emit removeRequested(currentItem);
         
-        qDebug() << "Device removed successfully";
+        printf("[Lightscape][AssignmentsWidget] Device removed successfully\n");
     } else {
-        qDebug() << "Invalid index for removal";
+        printf("[Lightscape][AssignmentsWidget] Invalid index for removal\n");
     }
 }
 
@@ -247,9 +265,18 @@ void AssignmentsWidget::updateAssignmentsList()
         item->setFlags(item->flags() | Qt::ItemIsSelectable | Qt::ItemIsEnabled);
         
         unsigned int color = assignment.color;
-        QColor qcolor((color >> 16) & 0xFF,    // Red
-                     (color >> 8) & 0xFF,     // Green
-                     color & 0xFF);           // Blue
+        
+        // Extract RGB values correctly from OpenRGB's format (0x00RRGGBB)
+        // Get the individual components
+        int red = RGBGetRValue(color);
+        int green = RGBGetGValue(color);
+        int blue = RGBGetBValue(color);
+        
+        // Create QColor with the correct RGB values
+        QColor qcolor(red, green, blue);
+        
+        printf("[Lightscape][AssignmentsWidget] Setting list item color: R=%d, G=%d, B=%d (0x%06X)\n", 
+               red, green, blue, color);
         
         item->setBackground(qcolor);
         ui->assignmentList->addItem(item);
