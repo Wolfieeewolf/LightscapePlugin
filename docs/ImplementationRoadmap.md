@@ -1,5 +1,7 @@
 # Lightscape Effect System - Implementation Roadmap
 
+*Project Repository: [https://github.com/Wolfieeewolf/LightscapePlugin](https://github.com/Wolfieeewolf/LightscapePlugin)*
+
 This document outlines the step-by-step implementation plan for enhancing the Lightscape plugin with an improved effect system based on OpenRGBEffectsPlugin concepts. Use this as a checklist to track progress through each stage of development.
 
 ## Overview of Stages

@@ -1,5 +1,7 @@
 # Lightscape Enhanced Effect System
 
+*Project Repository: [https://github.com/Wolfieeewolf/LightscapePlugin](https://github.com/Wolfieeewolf/LightscapePlugin)*
+
 This document details the enhanced effect system implemented in Phase 3 of the Lightscape development roadmap. The system now supports both spatial effects (specific to Lightscape) and traditional effects (compatible with OpenRGBEffectsPlugin).
 
 ## System Architecture

@@ -1,5 +1,7 @@
 # Lightscape Spatial Effects System - Project Handover
 
+*Project Repository: [https://github.com/Wolfieeewolf/LightscapePlugin](https://github.com/Wolfieeewolf/LightscapePlugin)*
+
 ## Project Overview
 
 The Lightscape plugin for OpenRGB is being enhanced with a spatial effects system that will allow RGB devices to respond to their position in 3D space. Unlike traditional effects systems that treat devices in isolation, this system will create cohesive lighting environments where effects can flow naturally through physical space based on device positions in a 3D grid.

@@ -1,5 +1,7 @@
 # Lightscape Effect System - Technical Specification
 
+*Project Repository: [https://github.com/Wolfieeewolf/LightscapePlugin](https://github.com/Wolfieeewolf/LightscapePlugin)*
+
 ## Overview
 
 This document provides technical details for implementing the enhanced effect system in Lightscape, integrating concepts from OpenRGBEffectsPlugin while preserving Lightscape's spatial capabilities.

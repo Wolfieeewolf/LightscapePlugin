@@ -1,5 +1,7 @@
 # Lightscape Effect Developer's Guide
 
+*Project Repository: [https://github.com/Wolfieeewolf/LightscapePlugin](https://github.com/Wolfieeewolf/LightscapePlugin)*
+
 This guide explains how to create new effects for the Lightscape plugin. The system supports both traditional 2D effects (similar to OpenRGBEffectsPlugin) and spatial 3D effects that respond to device positions in a grid.
 
 ## New Dual-Interface System
