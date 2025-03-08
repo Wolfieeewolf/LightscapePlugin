@@ -136,6 +136,7 @@ HEADERS +=                                                                      
     include/effects/EffectManager.h                                                             \
     include/effects/BaseEffect.h                                                                \
     include/effects/TestEffect/TestEffect.h                                                     \
+    include/effects/SpatialControllerZone.h                                                     \
 
 #-----------------------------------------------------------------------------------------------#
 # Sources                                                                                       #
@@ -166,6 +167,7 @@ SOURCES +=                                                                      
     src/effects/EffectManager.cpp                                                               \
     src/effects/BaseEffect.cpp                                                                  \
     src/effects/TestEffect/TestEffect.cpp                                                       \
+    src/effects/SpatialControllerZone.cpp                                                       \
 
 #-----------------------------------------------------------------------------------------------#
 # Forms                                                                                         #

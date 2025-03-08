@@ -2,6 +2,85 @@
 
 This guide explains how to create new effects for the Lightscape plugin. The system supports both traditional 2D effects (similar to OpenRGBEffectsPlugin) and spatial 3D effects that respond to device positions in a grid.
 
+## New Dual-Interface System
+
+The Lightscape effect system now supports two complementary interfaces:
+
+1. **Spatial Interface (Lightscape-specific)** - Position-based color calculation
+2. **Zone Interface (OpenRGBEffectsPlugin-compatible)** - Device/zone-based processing
+
+Effects need only implement the spatial interface (`getColorForPosition()`) - the base class provides a default implementation for the zone interface that leverages your spatial calculations.
+
+## Dual Interface Best Practices
+
+The new system supports both spatial and zone-based interfaces. Here are some best practices for creating effects that work well with both:
+
+### Implementing Only the Spatial Interface
+
+The simplest approach is to implement only the required `getColorForPosition()` method and let the base class handle the rest:
+
+```cpp
+RGBColor MyEffect::getColorForPosition(const GridPosition& pos, float time)
+{
+    // Calculate color based on position
+    // This will be used for both spatial and non-spatial zones
+    return color;
+}
+```
+
+The base class implementation of `StepEffect()` will:
+1. Identify which zones are spatial vs. non-spatial
+2. Use your `getColorForPosition()` for spatial zones
+3. Create a reasonable fallback for non-spatial zones
+
+### Customizing the Zone-Based Interface
+
+If you need more control over non-spatial devices, you can override `StepEffect()`:
+
+```cpp
+void MyEffect::StepEffect(std::vector<ControllerZone*> zones)
+{
+    // Option 1: Use base implementation first, then add custom behavior
+    BaseEffect::StepEffect(zones);
+    
+    // Add additional custom processing here
+    
+    // Option 2: Implement completely custom behavior
+    /*
+    for (auto* zone : zones) {
+        SpatialControllerZone* spatial = dynamic_cast<SpatialControllerZone*>(zone);
+        if (spatial) {
+            // Handle spatial zone
+            RGBColor color = getColorForPosition(spatial->position, time);
+            spatial->setAllLEDs(color);
+        } else {
+            // Handle non-spatial zone differently
+            // Example: special handling for keyboards, etc.
+        }
+    }
+    */
+}
+```
+
+### When to Override StepEffect
+
+Override the `StepEffect` method when you need to:
+
+1. Handle different device types differently (e.g., keyboards vs. strips)
+2. Implement matrix-specific effects (e.g., using X/Y coordinates within a zone)
+3. Provide special behavior for non-spatial devices that differs from spatial calculation
+4. Optimize performance by using direct zone manipulation
+
+### When to Keep the Default Implementation
+
+Stick with the default implementation when:
+
+1. Your effect works well with the same color calculation for all devices
+2. You want to maintain simple, maintainable code
+3. Your focus is primarily on spatial effects with basic support for non-spatial devices
+
+The dual interface system is designed to make it easy to get started while providing flexibility for more advanced effects when needed.
+
 ## Effect Basics
 
 ### Effect Structure
@@ -428,9 +507,18 @@ RGBColor PulseEffect::getColorForPosition(const GridPosition& pos, float time)
 Key methods and properties of the BaseEffect class:
 
 ```cpp
-// Core methods
+// Core spatial interface - required to implement
 RGBColor getColorForPosition(const GridPosition& pos, float time);
+
+// Zone-based interface - optional to override
 void StepEffect(std::vector<ControllerZone*> zones);
+void OnControllerZonesListChanged(std::vector<ControllerZone*> zones);
+
+// Initialization and lifecycle
+void initialize(DeviceManager* deviceManager, SpatialGrid* grid);
+void update(float deltaTime);
+void start();
+void stop();
 
 // Settings
 void loadSettings(const QJsonObject& json);
@@ -438,7 +526,7 @@ QJsonObject saveSettings() const;
 
 // Effect control
 void setEnabled(bool enabled);
-bool isEnabled() const;
+bool getEnabled() const;
 
 // Common properties
 void setSpeed(int value);
@@ -451,10 +539,46 @@ void setColors(const QList<RGBColor>& colors);
 QList<RGBColor> getColors() const;
 void setRandomColors(bool value);
 bool getRandomColors() const;
+void setFPS(unsigned int value);
+unsigned int getFPS() const;
 
 // Helper methods
 float calculateDistance(const GridPosition& pos1, const GridPosition& pos2) const;
 RGBColor applyBrightness(const RGBColor& color, float brightness_factor) const;
+```
+
+### SpatialControllerZone
+
+The new adapter class that bridges between spatial and traditional zones:
+
+```cpp
+class SpatialControllerZone : public ControllerZone {
+public:
+    // Constructor
+    SpatialControllerZone(int device_index, int zone_index, const GridPosition& position, DeviceManager* device_manager);
+    
+    // Core data
+    int deviceIndex;
+    int zoneIndex;
+    GridPosition position;
+    DeviceManager* deviceManager;
+    
+    // Spatial operations
+    float getDistanceFrom(const GridPosition& reference) const;
+    float getAngleFrom(const GridPosition& reference, int axis) const;
+    
+    // ControllerZone interface implementation
+    unsigned int getLEDCount() const override;
+    void setLED(int led_idx, RGBColor color, int brightness = 100, int temperature = 0, int tint = 0) override;
+    void setAllLEDs(RGBColor color, int brightness = 100, int temperature = 0, int tint = 0) override;
+    bool isMatrix() const override;
+    unsigned int getMatrixWidth() const override;
+    unsigned int getMatrixHeight() const override;
+    ZoneType getZoneType() const override;
+    
+    // Factory methods
+    static SpatialControllerZone* fromDeviceInfo(const DeviceInfo& info, DeviceManager* device_manager);
+};
 ```
 
 ### ColorUtils

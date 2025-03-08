@@ -364,3 +364,25 @@ void SpatialGrid::UpdateButtonStyle(QPushButton* button, const GridPosition& pos
         button->setStyleSheet(DEFAULT_STYLE);
     }
 }
+
+std::optional<GridPosition> SpatialGrid::GetDevicePosition(const Lightscape::DeviceInfo& device) const
+{
+    // Iterate through all positions with assignments
+    for (auto it = assignments.constBegin(); it != assignments.constEnd(); ++it) {
+        const GridPosition& pos = it.key();
+        const QList<DeviceAssignment>& assignmentList = it.value();
+        
+        // Check each assignment at this position
+        for (const DeviceAssignment& assignment : assignmentList) {
+            if (assignment.device_index == device.index && 
+                assignment.device_type == device.type && 
+                assignment.zone_index == device.zoneIndex && 
+                assignment.led_index == device.ledIndex) {
+                return pos;
+            }
+        }
+    }
+    
+    // Device not found in any position
+    return std::nullopt;
+}

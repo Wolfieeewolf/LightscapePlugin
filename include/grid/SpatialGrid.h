@@ -97,6 +97,9 @@ public:
     void SetRequireUserPosition(bool required);
     QString GetUserPositionWarning() const;
     void UpdateUserPositionWarning();
+    
+    // Get position for a device
+    std::optional<GridPosition> GetDevicePosition(const Lightscape::DeviceInfo& device) const;
 
 signals:
     void positionSelected(const GridPosition& pos);

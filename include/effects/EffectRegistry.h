@@ -14,12 +14,17 @@ public:
     static EffectRegistry& getInstance();
 
     // Registration
-    void registerEffect(const EffectInfo& info, EffectCreator creator);
+    void registerEffect(const EffectInfo& info, EffectCreator creator, const QString& category = "");
     void unregisterEffect(const QString& effectId);
 
     // Effect creation
     void* createEffect(const QString& effectId);
     bool hasEffect(const QString& effectId) const;
+    
+    // Categorization
+    QList<QString> getCategories() const;
+    QList<EffectInfo> getEffectsInCategory(const QString& category) const;
+    QMap<QString, QList<EffectInfo>> getCategorizedEffects() const;
 
 private:
     EffectRegistry() = default;
@@ -32,15 +37,17 @@ private:
     struct RegistryEntry {
         EffectInfo info;
         EffectCreator creator;
+        QString category;
     };
 
     QMap<QString, RegistryEntry> registry;
+    QMap<QString, QList<EffectInfo>> categorizedEffects;
 };
 
 // Registration helper macro
-#define REGISTER_EFFECT(info, type) \
+#define REGISTER_EFFECT(info, type, category) \
     static bool registered_##type = []() { \
-        EffectRegistry::getInstance().registerEffect(info, []() -> void* { return new type(); }); \
+        EffectRegistry::getInstance().registerEffect(info, []() -> void* { return new type(); }, category); \
         return true; \
     }();
 

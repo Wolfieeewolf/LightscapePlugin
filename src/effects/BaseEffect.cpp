@@ -1,4 +1,6 @@
 #include "effects/BaseEffect.h"
+#include "devices/DeviceManager.h"
+#include "effects/SpatialControllerZone.h"
 #include <cmath>
 
 namespace Lightscape {
@@ -13,7 +15,7 @@ BaseEffect::BaseEffect(QWidget* parent)
     userColors.append(ToRGBColor(255, 0, 0)); // Default red
 }
 
-void BaseEffect::initialize(DeviceManager* manager, SpatialGrid* grid)
+void BaseEffect::initialize(::DeviceManager* manager, ::SpatialGrid* grid)
 {
     deviceManager = manager;
     spatialGrid = grid;
@@ -171,6 +173,95 @@ RGBColor BaseEffect::applyBrightness(const RGBColor& color, float brightnessFact
     int b = static_cast<int>(RGBGetBValue(color) * clampedBrightness);
     
     return ToRGBColor(r, g, b);
+}
+
+void BaseEffect::StepEffect(std::vector<ControllerZone*> zones)
+{
+    if (!isEnabled) return;
+    
+    // Increment time - this may be overridden by derived classes
+    time += 1.0f / fps * (speed / 50.0f);
+    
+    // Process zones based on whether they have spatial data
+    std::vector<ControllerZone*> spatialZones;
+    std::vector<ControllerZone*> nonSpatialZones;
+    
+    // Separate zones into spatial and non-spatial
+    for (auto* zone : zones)
+    {
+        // Check if this is a SpatialControllerZone
+        if (dynamic_cast<SpatialControllerZone*>(zone))
+        {
+            spatialZones.push_back(zone);
+        }
+        else
+        {
+            nonSpatialZones.push_back(zone);
+        }
+    }
+    
+    // Process zones according to their type
+    processSpatialZones(spatialZones, time);
+    processNonSpatialZones(nonSpatialZones, time);
+}
+
+void BaseEffect::OnControllerZonesListChanged(std::vector<ControllerZone*> zones)
+{
+    // Default implementation does nothing, derived classes can override
+    // This is called when the list of zones changes
+}
+
+void BaseEffect::processSpatialZones(std::vector<ControllerZone*> zones, float time)
+{
+    // Process zones with spatial information
+    for (auto* zone : zones)
+    {
+        SpatialControllerZone* spatialZone = dynamic_cast<SpatialControllerZone*>(zone);
+        if (!spatialZone) continue;
+        
+        // Get position and calculate color
+        const GridPosition& position = spatialZone->position;
+        RGBColor color = getColorForPosition(position, time);
+        
+        // Apply brightness
+        float brightnessValue = brightness / 100.0f;
+        color = applyBrightness(color, brightnessValue);
+        
+        // Set color for all LEDs in the zone
+        spatialZone->setAllLEDs(color);
+    }
+}
+
+void BaseEffect::processNonSpatialZones(std::vector<ControllerZone*> zones, float time)
+{
+    // Default implementation for non-spatial zones - derived classes might override
+    // For non-spatial zones, we'll use a simple time-based approach
+    
+    int zoneCount = static_cast<int>(zones.size());
+    if (zoneCount == 0) return;
+    
+    for (int i = 0; i < zoneCount; i++)
+    {
+        ControllerZone* zone = zones[i];
+        
+        // Create a virtual position based on zone index
+        // This creates a simple linear arrangement in the X axis
+        GridPosition virtualPos(i, 0, 0);
+        
+        // Calculate color using the same algorithm as spatial zones
+        RGBColor color = getColorForPosition(virtualPos, time);
+        
+        // Apply brightness
+        float brightnessValue = brightness / 100.0f;
+        color = applyBrightness(color, brightnessValue);
+        
+        // Apply to all LEDs in the zone
+        unsigned int ledCount = zone->getLEDCount();
+        for (unsigned int led = 0; led < ledCount; led++)
+        {
+            zone->setLED(led, color);
+        }
+    }
 }
 
 } // namespace Lightscape

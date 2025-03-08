@@ -1,4 +1,5 @@
 #include "effects/TestEffect/TestEffect.h"
+#include "effects/SpatialControllerZone.h"
 
 namespace Lightscape {
 
@@ -28,6 +29,16 @@ RGBColor TestEffect::getColorForPosition(const GridPosition& pos, float time)
     int b = (pos.z * 20 + static_cast<int>(time * 70)) % 255;
     
     return ToRGBColor(r, g, b);
+}
+
+void TestEffect::StepEffect(std::vector<ControllerZone*> zones)
+{
+    // Call the base class StepEffect to use our getColorForPosition method
+    // This demonstrates using the existing spatial calculation for both interfaces
+    BaseEffect::StepEffect(zones);
+    
+    // If we wanted custom behavior for non-spatial zones, we could add it here
+    // For example, we could identify special devices and treat them differently
 }
 
 } // namespace Lightscape

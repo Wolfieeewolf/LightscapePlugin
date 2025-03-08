@@ -18,9 +18,12 @@ public:
     
     // Implement the required virtual method for spatial color calculation
     RGBColor getColorForPosition(const GridPosition& pos, float time) override;
+    
+    // Optional: Override StepEffect if custom behavior is needed
+    void StepEffect(std::vector<ControllerZone*> zones) override;
 }; 
 
 // Register effect outside the class definition
-REGISTER_EFFECT(TestEffect::GetStaticInfo(), TestEffect)
+REGISTER_EFFECT(TestEffect::GetStaticInfo(), TestEffect, "Test")
 
 } // namespace Lightscape

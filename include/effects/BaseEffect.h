@@ -2,14 +2,17 @@
 
 #include <QWidget>
 #include <QJsonObject>
-#include "devices/DeviceManager.h"
+#include <vector>
 #include "grid/SpatialGrid.h"
 #include "effects/EffectInfo.h"
+#include "core/Types.h"
+
+// Forward declarations
+class DeviceManager;
 
 namespace Lightscape {
 
-// Forward declare for use in BaseEffect class
-struct DeviceInfo;
+class ControllerZone; // For OpenRGBEffectsPlugin-style interface
 
 class BaseEffect : public QWidget
 {
@@ -20,7 +23,7 @@ public:
     virtual ~BaseEffect() = default;
     
     // Core effect methods
-    virtual void initialize(DeviceManager* deviceManager, SpatialGrid* grid);
+    virtual void initialize(::DeviceManager* deviceManager, ::SpatialGrid* grid);
     virtual void update(float deltaTime);
     virtual void start();
     virtual void stop();
@@ -30,6 +33,10 @@ public:
     
     // Apply effect to devices
     virtual void applyToDevices(const QList<DeviceInfo>& devices);
+    
+    // OpenRGBEffectsPlugin-style interface methods
+    virtual void StepEffect(std::vector<ControllerZone*> zones);
+    virtual void OnControllerZonesListChanged(std::vector<ControllerZone*> zones);
     
     // Settings management
     virtual void loadSettings(const QJsonObject& json);
@@ -55,6 +62,10 @@ public:
     void setRandomColors(bool value) { randomColorsEnabled = value; }
     bool getRandomColors() const { return randomColorsEnabled; }
     
+    // FPS settings
+    void setFPS(unsigned int value) { fps = value; }
+    unsigned int getFPS() const { return fps; }
+    
     // Each effect must provide static info
     static EffectInfo GetStaticInfo() { return EffectInfo(); }
     
@@ -63,8 +74,8 @@ signals:
     void settingsChanged();
     
 protected:
-    DeviceManager* deviceManager = nullptr;
-    SpatialGrid* spatialGrid = nullptr;
+    ::DeviceManager* deviceManager = nullptr;
+    ::SpatialGrid* spatialGrid = nullptr;
     bool isEnabled = false;
     float time = 0.0f;
     
@@ -75,18 +86,16 @@ protected:
     QList<RGBColor> userColors;
     bool randomColorsEnabled = false;
     
+    // Helper methods for OpenRGBEffectsPlugin-style interface
+    void processSpatialZones(std::vector<ControllerZone*> zones, float time);
+    void processNonSpatialZones(std::vector<ControllerZone*> zones, float time);
+    
+    // FPS setting
+    unsigned int fps = 60;
+    
     // Helper methods for derived classes
     float calculateDistance(const GridPosition& pos1, const GridPosition& pos2) const;
     RGBColor applyBrightness(const RGBColor& color, float brightnessFactor) const;
-};
-
-// Definition of DeviceInfo structure
-struct DeviceInfo {
-    int index;
-    DeviceType type;
-    int zoneIndex = -1;
-    int ledIndex = -1;
-    GridPosition position;
 };
 
 } // namespace Lightscape
