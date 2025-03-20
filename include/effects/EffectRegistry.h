@@ -27,7 +27,7 @@ public:
     QMap<QString, QList<EffectInfo>> getCategorizedEffects() const;
 
 private:
-    EffectRegistry() = default;
+    EffectRegistry();
     ~EffectRegistry() = default;
 
     // Prevent copying

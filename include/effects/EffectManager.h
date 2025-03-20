@@ -1,3 +1,11 @@
+/*---------------------------------------------------------*\
+| Lightscape Plugin for OpenRGB                             |
+|                                                           |
+| EffectManager.h                                           |
+|                                                           |
+| Manager for effect lifecycle and application              |
+\*---------------------------------------------------------*/
+
 #pragma once
 
 #include <QObject>
@@ -10,6 +18,7 @@
 #include <vector>
 #include "effects/BaseEffect.h"
 #include "effects/SpatialControllerZone.h"
+#include "effects/PreviewRenderer.h"
 
 // Forward declarations
 class DeviceManager;
@@ -26,16 +35,26 @@ public:
     
     void initialize(::DeviceManager* deviceManager, ::SpatialGrid* grid);
     
-    // Effect control
+    // Effect control - original interface
     bool startEffect(const QString& effectId);
     void stopEffect();
-    bool isEffectRunning() const { return activeEffect != nullptr && isRunning; }
-    QString getCurrentEffectId() const { return currentEffectId; }
-    BaseEffect* getCurrentEffect() const { return activeEffect; }
+    bool isEffectRunning() const { return _activeEffect != nullptr && _isRunning; }
+    QString getCurrentEffectId() const { return _currentEffectId; }
+    BaseEffect* getCurrentEffect() const { return _activeEffect; }
+    
+    // Enhanced effect control - supports multiple effects and direct effect instances
+    bool startEffect(const QString& effectId, BaseEffect* existingEffect);
+    void stopEffect(BaseEffect* effect);
+    bool isEffectRunning(BaseEffect* effect) const;
+    QList<BaseEffect*> getRunningEffects() const;
     
     // Device selection
     void setActiveDevices(const QList<DeviceInfo>& devices);
-    QList<DeviceInfo> getActiveDevices() const { return activeDevices; }
+    QList<DeviceInfo> getActiveDevices() const { return _activeDevices; }
+    
+    // Multiple device selections
+    void setActiveDevicesForEffect(BaseEffect* effect, const QList<DeviceInfo>& devices);
+    QList<DeviceInfo> getActiveDevicesForEffect(BaseEffect* effect) const;
     
     // Zone management (OpenRGBEffectsPlugin-style)
     void setActiveZones(const std::vector<ControllerZone*>& zones);
@@ -48,18 +67,25 @@ public:
     // Convert device info to zones
     void updateZonesFromDevices();
     
-    // Preview
+    // Preview controls
     void setPreviewEnabled(bool enabled);
-    bool isPreviewEnabled() const { return previewEnabled; }
+    bool isPreviewEnabled() const { return _previewEnabled; }
+    void setPreviewRenderer(PreviewRenderer* renderer);
     void setReducedFps(bool reduced);
     
     // Preview zone management
     void addPreview(BaseEffect* effect, ControllerZone* preview);
     void removePreview(BaseEffect* effect);
+    
+    // Profile management
+    QJsonObject saveProfile() const;
+    bool loadProfile(const QJsonObject& profile);
 
 signals:
     void effectStarted(const QString& effectId);
     void effectStopped();
+    void effectStarted(BaseEffect* effect);
+    void effectStopped(BaseEffect* effect);
     void previewUpdated();
 
 private slots:
@@ -77,25 +103,32 @@ private:
     void effectThreadFunction(BaseEffect* effect);
     void updateDevicePositions();
     
-    QTimer* updateTimer;
-    ::DeviceManager* deviceManager = nullptr;
-    ::SpatialGrid* spatialGrid = nullptr;
-    BaseEffect* activeEffect = nullptr;
-    QString currentEffectId;
-    QList<DeviceInfo> activeDevices;
-    bool isRunning = false;
-    bool previewEnabled = true;
-    int updateInterval = 33; // ~30 FPS
-    QElapsedTimer frameTimer;
+    QTimer* _updateTimer;
+    ::DeviceManager* _deviceManager = nullptr;
+    ::SpatialGrid* _spatialGrid = nullptr;
+    BaseEffect* _activeEffect = nullptr;  // Still keep for backwards compatibility
+    QString _currentEffectId;
+    QList<DeviceInfo> _activeDevices;
+    bool _isRunning = false;
+    bool _previewEnabled = true;
+    int _updateInterval = 33; // ~30 FPS
+    QElapsedTimer _frameTimer;
+    
+    // Multiple effect support
+    QMap<BaseEffect*, bool> _runningEffects;
+    QMap<BaseEffect*, QList<DeviceInfo>> _effectDevices;
+    
+    // Preview
+    PreviewRenderer* _previewRenderer = nullptr;
     
     // Zone tracking
-    std::vector<ControllerZone*> activeZones;
-    std::vector<SpatialControllerZone*> spatialZones;
-    QMap<BaseEffect*, ControllerZone*> previews;
+    std::vector<ControllerZone*> _activeZones;
+    std::vector<SpatialControllerZone*> _spatialZones;
+    QMap<BaseEffect*, ControllerZone*> _previews;
     
     // Thread management
-    std::map<BaseEffect*, std::thread*> effectThreads;
-    std::mutex mutex;
+    std::map<BaseEffect*, std::thread*> _effectThreads;
+    std::mutex _mutex;
 };
 
 } // namespace Lightscape

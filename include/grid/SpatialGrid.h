@@ -47,6 +47,14 @@ public:
         , zone_index(zone)
         , led_index(led)
         , color(ToRGBColor(0, 0, 0)) {}
+        
+    // Add equality operator to fix QList comparison issue
+    bool operator==(const DeviceAssignment& other) const {
+        return (device_index == other.device_index &&
+                device_type == other.device_type &&
+                zone_index == other.zone_index &&
+                led_index == other.led_index);
+    }
 };
 
 class SpatialGrid : public QObject {

@@ -51,9 +51,23 @@ void BaseEffect::stop()
 
 void BaseEffect::applyToDevices(const QList<DeviceInfo>& devices)
 {
-    if (!deviceManager || !isEnabled) return;
+    if (!deviceManager) {
+        printf("[Lightscape][BaseEffect] ERROR: deviceManager is null\n");
+        return;
+    }
+    
+    if (!isEnabled) {
+        printf("[Lightscape][BaseEffect] Effect not enabled, not applying colors\n");
+        return;
+    }
+    
+    printf("[Lightscape][BaseEffect] Applying effect to %d devices (effect: %s)\n", 
+           devices.size(), 
+           GetStaticInfo().name.toStdString().c_str());
     
     // Apply the effect to each device based on its position
+    int successCount = 0;
+    
     for (const DeviceInfo& device : devices) {
         RGBColor color = getColorForPosition(device.position, time);
         
@@ -61,23 +75,45 @@ void BaseEffect::applyToDevices(const QList<DeviceInfo>& devices)
         float brightnessValue = brightness / 100.0f;
         color = applyBrightness(color, brightnessValue);
         
+        // Debug color values
+        int r = static_cast<int>(RGBGetRValue(color));
+        int g = static_cast<int>(RGBGetGValue(color));
+        int b = static_cast<int>(RGBGetBValue(color));
+        
+        printf("[Lightscape][BaseEffect] Applying color RGB(%d,%d,%d) to device idx:%d pos:(%d,%d,%d)\n", 
+               r, g, b, device.index, device.position.x, device.position.y, device.position.z);
+        
         // Apply the color based on device specifics
+        bool success = false;
+        
         if (device.type == DeviceType::RGB) {
             if (device.ledIndex >= 0) {
                 // Set specific LED
-                deviceManager->SetLEDColor(device.index, device.ledIndex, color);
+                success = deviceManager->SetLEDColor(device.index, device.ledIndex, color);
+                printf("[Lightscape][BaseEffect] Setting LED %d color: %s\n", device.ledIndex, success ? "SUCCESS" : "FAILED");
             }
             else if (device.zoneIndex >= 0) {
                 // Set specific zone
-                deviceManager->SetZoneColor(device.index, device.zoneIndex, color);
+                success = deviceManager->SetZoneColor(device.index, device.zoneIndex, color);
+                printf("[Lightscape][BaseEffect] Setting zone %d color: %s\n", device.zoneIndex, success ? "SUCCESS" : "FAILED");
             }
             else {
                 // Set whole device
-                deviceManager->SetDeviceColor(device.index, color);
+                success = deviceManager->SetDeviceColor(device.index, color);
+                printf("[Lightscape][BaseEffect] Setting device %d color: %s\n", device.index, success ? "SUCCESS" : "FAILED");
+            }
+            
+            // Explicitly force an update to the device
+            deviceManager->UpdateDevice(device.index);
+            
+            if (success) {
+                successCount++;
             }
         }
         // Could add support for non-RGB devices in the future
     }
+    
+    printf("[Lightscape][BaseEffect] Successfully applied colors to %d/%d devices\n", successCount, devices.size());
 }
 
 void BaseEffect::loadSettings(const QJsonObject& json)

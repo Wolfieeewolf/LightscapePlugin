@@ -109,15 +109,25 @@ INCLUDEPATH +=                                                                  
 HEADERS +=                                                                                      \
     include/core/Types.h                                                                        \
     include/core/LightscapePlugin.h                                                             \
-    include/devices/DeviceManager.h                                                              \
+    include/devices/DeviceManager.h                                                             \
     include/core/LightscapeWidget.h                                                             \
+    include/core/EnhancedLightscapeWidget.h                                                     \
     include/core/SettingsManager.h                                                              \
     include/core/ThemeManager.h                                                                 \
     include/core/ResourceHandler.h                                                              \
     include/core/TrayMenuManager.h                                                              \
     include/core/StateManager.h                                                                 \
     include/core/VersionManager.h                                                               \
-    include/grid/ReferencePointSelector.h                                                        \
+    include/core/LoggingManager.h                                                               \
+    include/core/SetupTestDialog.h                                                              \
+    include/core/SetupTestUtility.h                                                             \
+    include/core/GridValidator.h                                                                \
+    include/core/TestGridVisualizer.h                                                           \
+    include/core/PositionTestTab.h                                                              \
+    include/core/LayerTestTab.h                                                                 \
+    include/core/PatternTestTab.h                                                               \
+    include/core/ValidationTab.h                                                                \
+    include/grid/ReferencePointSelector.h                                                       \
     include/grid/GridTypes.h                                                                    \
     include/grid/SpatialGrid.h                                                                  \
     include/grid/GridPanel.h                                                                    \
@@ -137,21 +147,46 @@ HEADERS +=                                                                      
     include/effects/BaseEffect.h                                                                \
     include/effects/TestEffect/TestEffect.h                                                     \
     include/effects/SpatialControllerZone.h                                                     \
+    include/effects/EffectTabHeader.h                                                           \
+    include/effects/EffectTabWidget.h                                                           \
+    include/effects/PreviewRenderer.h                                                           \
+    include/effects/PreviewRenderer2D.h                                                         \
+    include/effects/PreviewRenderer3D.h                                                         \
+    include/effects/PreviewInteraction.h                                                        \
+    include/effects/PreviewSettings.h                                                           \
+    include/effects/DeviceListWidget.h                                                          \
+    include/effects/EnhancedEffectWidget.h                                                      \
+    include/effects/EffectSelectorDialog.h                                                      \
+    include/effects/EffectStateManager.h                                                        \
+    include/effects/panels/EffectsListPanel.h                                                   \
+    include/effects/panels/EffectsControlPanel.h                                                \
+    include/effects/panels/EffectsPreviewPanel.h                                                \
+    include/effects/panels/DeviceListPanel.h                                                    \
 
 #-----------------------------------------------------------------------------------------------#
 # Sources                                                                                       #
 #-----------------------------------------------------------------------------------------------#
 SOURCES +=                                                                                      \
     src/core/LightscapePlugin.cpp                                                               \
-    src/devices/DeviceManager.cpp                                                                \
+    src/devices/DeviceManager.cpp                                                               \
     src/core/LightscapeWidget.cpp                                                               \
+    src/core/EnhancedLightscapeWidget.cpp                                                       \
     src/core/SettingsManager.cpp                                                                \
     src/core/ThemeManager.cpp                                                                   \
     src/core/ResourceHandler.cpp                                                                \
     src/core/TrayMenuManager.cpp                                                                \
     src/core/StateManager.cpp                                                                   \
     src/core/VersionManager.cpp                                                                 \
-    src/grid/ReferencePointSelector.cpp                                                           \
+    src/core/LoggingManager.cpp                                                                 \
+    src/core/SetupTestDialog.cpp                                                                \
+    src/core/SetupTestUtility.cpp                                                               \
+    src/core/GridValidator.cpp                                                                  \
+    src/core/TestGridVisualizer.cpp                                                             \
+    src/core/PositionTestTab.cpp                                                                \
+    src/core/LayerTestTab.cpp                                                                   \
+    src/core/PatternTestTab.cpp                                                                 \
+    src/core/ValidationTab.cpp                                                                  \
+    src/grid/ReferencePointSelector.cpp                                                         \
     src/grid/SpatialGrid.cpp                                                                    \
     src/grid/GridPanel.cpp                                                                      \
     src/grid/GridSettingsDialog.cpp                                                             \
@@ -168,6 +203,21 @@ SOURCES +=                                                                      
     src/effects/BaseEffect.cpp                                                                  \
     src/effects/TestEffect/TestEffect.cpp                                                       \
     src/effects/SpatialControllerZone.cpp                                                       \
+    src/effects/EffectTabHeader.cpp                                                             \
+    src/effects/EffectTabWidget.cpp                                                             \
+    src/effects/PreviewRenderer.cpp                                                             \
+    src/effects/PreviewRenderer2D.cpp                                                           \
+    src/effects/PreviewRenderer3D.cpp                                                           \
+    src/effects/PreviewInteraction.cpp                                                          \
+    src/effects/PreviewSettings.cpp                                                             \
+    src/effects/DeviceListWidget.cpp                                                            \
+    src/effects/EnhancedEffectWidget.cpp                                                        \
+    src/effects/EffectSelectorDialog.cpp                                                        \
+    src/effects/EffectStateManager.cpp                                                          \
+    src/effects/panels/EffectsListPanel.cpp                                                     \
+    src/effects/panels/EffectsControlPanel.cpp                                                  \
+    src/effects/panels/EffectsPreviewPanel.cpp                                                  \
+    src/effects/panels/DeviceListPanel.cpp                                                      \
 
 #-----------------------------------------------------------------------------------------------#
 # Forms                                                                                         #
@@ -177,6 +227,14 @@ FORMS +=                                                                        
     ui/assignments/AssignmentsWidget.ui                                                         \
     ui/grid/GridSettingsDialog.ui                                                               \
     ui/effects/EffectWidget.ui                                                                  \
+    ui/effects/EnhancedEffectWidget.ui                                                          \
+    ui/effects/headers/EffectTabHeader.ui                                                       \
+    ui/effects/DeviceListWidget.ui                                                              \
+    ui/effects/EffectSelectorDialog.ui                                                          \
+    ui/effects/panels/EffectsListPanel.ui                                                       \
+    ui/effects/panels/EffectsControlPanel.ui                                                    \
+    ui/effects/panels/EffectsPreviewPanel.ui                                                    \
+    ui/effects/panels/DeviceListPanel.ui                                                        \
 
 #-----------------------------------------------------------------------------------------------#
 # Platform-specific settings                                                                    #
@@ -184,7 +242,9 @@ FORMS +=                                                                        
 win32 {
     DEFINES += WIN32 _MBCS _CRT_SECURE_NO_WARNINGS _WINSOCK_DEPRECATED_NO_WARNINGS WIN32_LEAN_AND_MEAN
     LIBS += -lsetupapi -lhid -lws2_32 -lole32
-    DESTDIR = $(APPDATA)/OpenRGB/plugins
+    
+    # Directly build to the OpenRGB plugins directory but ONLY if not already running
+    DESTDIR = "C:/Users/wolfi/AppData/Roaming/OpenRGB/plugins"
 }
 
 unix:!macx {
@@ -204,17 +264,19 @@ macx {
 # Build Directories                                                                             #
 #-----------------------------------------------------------------------------------------------#
 win32:CONFIG(debug, debug|release) {
-    win32:DESTDIR = debug
+    # Use debug folder for intermediate files
+    win32:OBJECTS_DIR = debug
 }
 
 win32:CONFIG(release, debug|release) {
-    win32:DESTDIR = release
+    # Use release folder for intermediate files
+    win32:OBJECTS_DIR = release
 }
 
-win32:OBJECTS_DIR = _intermediate_$$DESTDIR/.obj
-win32:MOC_DIR     = _intermediate_$$DESTDIR/.moc
-win32:RCC_DIR     = _intermediate_$$DESTDIR/.qrc
-win32:UI_DIR      = _intermediate_$$DESTDIR/.ui
+win32:OBJECTS_DIR = _intermediate_$$OBJECTS_DIR/.obj
+win32:MOC_DIR     = _intermediate_$$OBJECTS_DIR/.moc
+win32:RCC_DIR     = _intermediate_$$OBJECTS_DIR/.qrc
+win32:UI_DIR      = _intermediate_$$OBJECTS_DIR/.ui
 
 unix:!macx:OBJECTS_DIR = build/obj
 unix:!macx:MOC_DIR = build/moc

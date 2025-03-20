@@ -62,9 +62,12 @@ public:
     void setRandomColors(bool value) { randomColorsEnabled = value; }
     bool getRandomColors() const { return randomColorsEnabled; }
     
-    // FPS settings
+    // Get the FPS setting
     void setFPS(unsigned int value) { fps = value; }
     unsigned int getFPS() const { return fps; }
+    
+    // Get the internal time for consistent animation timing
+    float getInternalTime() const { return time; }
     
     // Each effect must provide static info
     static EffectInfo GetStaticInfo() { return EffectInfo(); }

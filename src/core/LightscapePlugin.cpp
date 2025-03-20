@@ -8,8 +8,9 @@
 
 #include "core/LightscapePlugin.h"
 #include "devices/DeviceManager.h"
-#include "core/LightscapeWidget.h"
+#include "core/EnhancedLightscapeWidget.h"
 #include "core/ThemeManager.h"
+#include "core/LoggingManager.h"
 #include <QApplication>
 #include <QMenu>
 #include <QMessageBox>
@@ -24,7 +25,15 @@ LightscapePlugin::LightscapePlugin() :
     widget(nullptr),
     device_manager(nullptr)
 {
-    printf("[Lightscape] Plugin constructor.\n");
+    // Set log level to Error (will only show errors)
+    Lightscape::LoggingManager::getInstance().setLogLevel(Lightscape::LogLevel::Error);
+    Lightscape::LoggingManager::getInstance().installHandler();
+    
+    // Enable file logging
+    Lightscape::LoggingManager::getInstance().enableFileLogging(true);
+    
+    // Just log that the plugin loaded
+    LOG_INFO("Lightscape Plugin loaded successfully");
     
     connect(resource_handler, &ResourceHandler::resourceError,
             this, &LightscapePlugin::handleResourceError);
@@ -35,13 +44,13 @@ LightscapePlugin::LightscapePlugin() :
 
 LightscapePlugin::~LightscapePlugin()
 {
-    printf("[Lightscape] Plugin destructor.\n");
+    // Logging disabled, except for errors
     Unload();
 }
 
 OpenRGBPluginInfo LightscapePlugin::GetPluginInfo()
 {
-    printf("[Lightscape] Loading plugin info.\n");
+    // Logging disabled, except for errors
     
     OpenRGBPluginInfo info;
     info.Name = "Lightscape";
@@ -61,13 +70,13 @@ OpenRGBPluginInfo LightscapePlugin::GetPluginInfo()
 
 unsigned int LightscapePlugin::GetPluginAPIVersion()
 {
-    printf("[Lightscape] Loading plugin API version.\n");
+    // Logging disabled, except for errors
     return OPENRGB_PLUGIN_API_VERSION;
 }
 
 void LightscapePlugin::Load(ResourceManagerInterface* resource_manager_ptr)
 {
-    printf("[Lightscape] Loading plugin.\n");
+    // Logging disabled, except for errors
     
     // Determine dark theme from application palette
     bool dark_theme = QApplication::palette().window().color().value() < 128;
@@ -102,7 +111,22 @@ void LightscapePlugin::Load(ResourceManagerInterface* resource_manager_ptr)
 
 bool LightscapePlugin::initializePlugin(bool dark, ResourceManager* manager)
 {
-    printf("[Lightscape] Initializing plugin.\n");
+    // Logging disabled, except for errors
+    
+    // Initialize the registry with test effect
+    printf("[Lightscape][Plugin] Registering TestEffect\n");
+    
+    // Manually register TestEffect
+    Lightscape::EffectInfo testEffectInfo = Lightscape::TestEffect::GetStaticInfo();
+    Lightscape::EffectRegistry::getInstance().registerEffect(
+        testEffectInfo,
+        []() -> void* { return new Lightscape::TestEffect(); },
+        "Basic"
+    );
+    
+    printf("[Lightscape][Plugin] Registered TestEffect with name: %s, id: %s\n",
+           testEffectInfo.name.toStdString().c_str(),
+           testEffectInfo.id.toStdString().c_str());
     
     if (!resource_handler->initialize(manager))
     {
@@ -116,7 +140,7 @@ bool LightscapePlugin::initializePlugin(bool dark, ResourceManager* manager)
 
     if (widget == nullptr)
     {
-        widget = new LightscapeWidget(resource_handler->getResourceManager());
+        widget = new EnhancedLightscapeWidget(resource_handler->getResourceManager());
         widget->setStyleSheet(ThemeManager::getStyleSheet(dark));
         widget->initializeGrid();
     }
@@ -135,7 +159,7 @@ bool LightscapePlugin::initializePlugin(bool dark, ResourceManager* manager)
 
 QWidget* LightscapePlugin::GetWidget()
 {
-    printf("[Lightscape] Creating widget.\n");
+    // Logging disabled, except for errors
     
     if (state_manager->getCurrentState() != StateManager::PluginState::Running)
     {
@@ -147,7 +171,7 @@ QWidget* LightscapePlugin::GetWidget()
 
 QMenu* LightscapePlugin::GetTrayMenu()
 {
-    printf("[Lightscape] Creating tray menu.\n");
+    // Logging disabled, except for errors
     
     if (state_manager->getCurrentState() != StateManager::PluginState::Running || 
         !tray_manager)
@@ -159,7 +183,7 @@ QMenu* LightscapePlugin::GetTrayMenu()
 
 void LightscapePlugin::Unload()
 {
-    printf("[Lightscape] Unloading plugin.\n");
+    // Logging disabled, except for errors
     
     state_manager->setState(StateManager::PluginState::Disabled);
 
@@ -220,7 +244,7 @@ void LightscapePlugin::handleStateChanged(StateManager::PluginState newState)
 
 void LightscapePlugin::handlePluginError(const QString& error)
 {
-    printf("[Lightscape] Plugin error: %s\n", error.toStdString().c_str());
+    LOG_ERROR("[Lightscape] Plugin error: " + error);
     
     qWarning() << "Plugin error:" << error;
     state_manager->setError(error);

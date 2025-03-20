@@ -10,6 +10,8 @@
 
 #include <QObject>
 #include <QtPlugin>
+#include "effects/EffectRegistry.h"
+#include "effects/TestEffect/TestEffect.h"
 #include "OpenRGBPluginInterface.h"
 #include "ResourceManager.h"
 #include "core/ResourceHandler.h"
@@ -17,7 +19,7 @@
 #include "core/StateManager.h"
 #include "core/VersionManager.h"
 
-class LightscapeWidget;
+class EnhancedLightscapeWidget;
 class DeviceManager;
 
 class LightscapePlugin : public QObject, public OpenRGBPluginInterface
@@ -55,6 +57,6 @@ private:
     ResourceHandler* resource_handler;
     TrayMenuManager* tray_manager;
     StateManager* state_manager;
-    LightscapeWidget* widget;
+    EnhancedLightscapeWidget* widget;
     DeviceManager* device_manager;
 };

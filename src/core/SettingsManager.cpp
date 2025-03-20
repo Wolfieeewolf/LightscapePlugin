@@ -1,4 +1,5 @@
 #include "core/SettingsManager.h"
+#include "core/LoggingManager.h"
 #include <QJsonDocument>
 #include <QJsonArray>
 #include <QFile>
@@ -65,7 +66,7 @@ void SettingsManager::saveState()
 {
     if (!spatialGrid || !nonRGBDeviceManager || !deviceManager)
     {
-        qWarning() << "SettingsManager: Cannot save state - managers not initialized";
+        LOG_WARNING("SettingsManager: Cannot save state - managers not initialized");
         return;
     }
 
@@ -206,12 +207,12 @@ void SettingsManager::saveState()
     
     if (!file.open(QIODevice::WriteOnly))
     {
-        qWarning() << "SettingsManager: Could not open settings file for writing:" << file.errorString();
+        LOG_WARNING("SettingsManager: Could not open settings file for writing: " + file.errorString());
         return;
     }
 
     file.write(doc.toJson(QJsonDocument::Indented));
-    qDebug() << "SettingsManager: State saved successfully";
+    LOG_DEBUG("SettingsManager: State saved successfully");
 }
 
 void SettingsManager::loadState()
@@ -219,20 +220,20 @@ void SettingsManager::loadState()
     QFile file(getSettingsPath());
     if (!file.exists())
     {
-        qDebug() << "SettingsManager: No saved state found";
+        LOG_DEBUG("SettingsManager: No saved state found");
         return;
     }
 
     if (!file.open(QIODevice::ReadOnly))
     {
-        qWarning() << "SettingsManager: Could not open settings file for reading:" << file.errorString();
+        LOG_WARNING("SettingsManager: Could not open settings file for reading: " + file.errorString());
         return;
     }
 
     QJsonDocument doc = QJsonDocument::fromJson(file.readAll());
     if (doc.isNull())
     {
-        qWarning() << "SettingsManager: Failed to parse settings file";
+        LOG_WARNING("SettingsManager: Failed to parse settings file");
         return;
     }
 
@@ -355,7 +356,7 @@ void SettingsManager::loadState()
                 
                 // If we didn't find the device by name and the original index is invalid, skip this assignment
                 if (!deviceFound && !deviceManager->ValidateDeviceIndex(deviceIndex, deviceType)) {
-                    qDebug() << "SettingsManager: Skipping assignment for device that no longer exists";
+                    LOG_DEBUG("SettingsManager: Skipping assignment for device that no longer exists");
                     continue;
                 }
                 
@@ -405,5 +406,5 @@ void SettingsManager::loadState()
         }
     }
 
-    qDebug() << "SettingsManager: State loaded successfully";
+    LOG_INFO("SettingsManager: State loaded successfully");
 }

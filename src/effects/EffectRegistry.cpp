@@ -2,6 +2,12 @@
 
 namespace Lightscape {
 
+EffectRegistry::EffectRegistry()
+{
+    // Print debug message on initialization
+    printf("[Lightscape][EffectRegistry] EffectRegistry initialized\n");
+}
+
 EffectRegistry& EffectRegistry::getInstance()
 {
     static EffectRegistry instance;
@@ -10,6 +16,8 @@ EffectRegistry& EffectRegistry::getInstance()
 
 void EffectRegistry::registerEffect(const EffectInfo& info, EffectCreator creator, const QString& category)
 {
+    printf("[Lightscape][EffectRegistry] Registering effect: %s\n", info.id.toStdString().c_str());
+    
     if (!info.id.isEmpty() && !hasEffect(info.id))
     {
         // Create the registry entry
@@ -30,6 +38,15 @@ void EffectRegistry::registerEffect(const EffectInfo& info, EffectCreator creato
         
         // Add effect to the category
         categorizedEffects[effectCategory].append(info);
+        
+        printf("[Lightscape][EffectRegistry] Successfully registered effect: %s in category: %s\n", 
+               info.id.toStdString().c_str(), effectCategory.toStdString().c_str());
+    }
+    else {
+        printf("[Lightscape][EffectRegistry] Failed to register effect: %s (id empty: %s, already exists: %s)\n", 
+               info.id.toStdString().c_str(), 
+               info.id.isEmpty() ? "true" : "false", 
+               hasEffect(info.id) ? "true" : "false");
     }
 }
 
@@ -68,10 +85,23 @@ void EffectRegistry::unregisterEffect(const QString& effectId)
 
 void* EffectRegistry::createEffect(const QString& effectId)
 {
+    printf("[Lightscape][EffectRegistry] Creating effect: %s\n", effectId.toStdString().c_str());
+    
+    // Debug: print all registered effects
+    printf("[Lightscape][EffectRegistry] Available effects:\n");
+    for (auto it = registry.begin(); it != registry.end(); ++it) {
+        printf("  - %s\n", it.key().toStdString().c_str());
+    }
+    
     if (hasEffect(effectId))
     {
-        return registry.value(effectId).creator();
+        void* result = registry.value(effectId).creator();
+        printf("[Lightscape][EffectRegistry] Effect created: %s, result: %p\n", 
+               effectId.toStdString().c_str(), result);
+        return result;
     }
+    
+    printf("[Lightscape][EffectRegistry] Effect not found: %s\n", effectId.toStdString().c_str());
     return nullptr;
 }
 
